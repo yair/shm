@@ -5,26 +5,35 @@
 #include <errno.h>
 #include <unistd.h>
 
+// Thresholds above which monitor will issue a warning
 const double load_thresh = 200;
 const double ram_thresh = 90;
 const double storage_thresh = 80;
 
+// The functions that actually fetch the variables from the system
 double get_load();
 double get_ram();
 double get_storage();
 
+// The function that decides whether the user should be warned about system health issues.
 void print_warnings(double load, double ram, double storage);
 
+// Utility function to exit the program in case of a file read error
 void read_error(char *fn);
+
+// Implementation
 
 int main() {
 
+    // Fetch variables
     double load = get_load();
     double ram = get_ram();
     double storage = get_storage();
 
+    // Print warnings, if necessary
     print_warnings(load, ram, storage);
 
+    // If running from a terminal, let the user know of the current status, in addition to warnings
     if (isatty(fileno(stdout))) {
 
         printf("Load: %.0lf%%  RAM: %.0lf%%  Storage: %.0lf%%\n",
